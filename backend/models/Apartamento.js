@@ -1,27 +1,20 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+import { DataTypes } from "sequelize";
+import sequelize from "../config/db";
 
-const Apartamento = sequelize.define('Apartamento', {
-  numApt: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  torre: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  estado: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
+const Apartamento = sequelize.define("Apartamento", {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    numero: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    propietarioId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    }
 });
 
-module.exports = Apartamento;
+export default Apartamento;
