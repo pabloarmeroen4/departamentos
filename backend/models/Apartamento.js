@@ -1,20 +1,40 @@
-import { DataTypes } from "sequelize";
-import sequelize from "../config/db";
+'use strict';
 
-const Apartamento = sequelize.define("Apartamento", {
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
+module.exports = (sequelize, DataTypes) => {
+  const Apartamento = sequelize.define('Apartamento', {
+    numApt: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
-    numero: {
-        type: DataTypes.STRING,
-        allowNull: false
+    torre: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
-    propietarioId: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    }
-});
+    estado: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isIn: [['ocupado', 'desocupado', 'mantenimiento']],
+      },
+    },
+  });
 
-export default Apartamento;
+  Apartamento.associate = (models) => {
+    Apartamento.belongsTo(models.Propietario, {
+      foreignKey: 'propietarioId',
+      as: 'propietario',
+    });
+
+    Apartamento.hasMany(models.Visitante, {
+      foreignKey: 'apartamentoId',
+      as: 'visitantes',
+    });
+
+    Apartamento.hasMany(models.Pago, {
+      foreignKey: 'apartamentoId',
+      as: 'pagos',
+    });
+  };
+
+  return Apartamento;
+};

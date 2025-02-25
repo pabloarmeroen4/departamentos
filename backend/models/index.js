@@ -1,35 +1,43 @@
+'use strict';
+
+const fs = require('fs');
+const path = require('path');
 const { Sequelize } = require('sequelize');
-const sequelize = require('../config/db');
+const basename = path.basename(__filename);
+const env = process.env.NODE_ENV || 'development';
+const config = require(__dirname + '/../config/config.json')[env];
+const db = {};
 
-const Propietario = require('./Propietario');
-const Apartamento = require('./Apartamento');
-const Visitante = require('./Visitante');
-const Usuario = require('./Usuario');
-const Pago = require('./Pago');
-const Informe = require('./Informe');
+let sequelize;
+if (config.use_env_variable) {
+  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+} else {
+  sequelize = new Sequelize(config.database, config.username, config.password, config);
+}
 
-// Relaciones entre modelos
-Propietario.hasMany(Apartamento, { foreignKey: 'propietarioId' });
-Apartamento.belongsTo(Propietario, { foreignKey: 'propietarioId' });
+// Cargar todos los modelos
+fs.readdirSync(__dirname)
+  .filter(file => {
+    return (
+      file.indexOf('.') !== 0 &&
+      file !== basename &&
+      file.slice(-3) === '.js' &&
+      file.indexOf('.test.js') === -1
+    );
+  })
+  .forEach(file => {
+    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
+    db[model.name] = model;
+  });
 
-Apartamento.hasMany(Visitante, { foreignKey: 'apartamentoId' });
-Visitante.belongsTo(Apartamento, { foreignKey: 'apartamentoId' });
+// Definir relaciones
+Object.keys(db).forEach(modelName => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
 
-Apartamento.hasMany(Pago, { foreignKey: 'apartamentoId' });
-Pago.belongsTo(Apartamento, { foreignKey: 'apartamentoId' });
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
 
-Propietario.hasMany(Pago, { foreignKey: 'propietarioId' });
-Pago.belongsTo(Propietario, { foreignKey: 'propietarioId' });
-
-Usuario.hasMany(Informe, { foreignKey: 'emisorId' });
-Informe.belongsTo(Usuario, { foreignKey: 'emisorId' });
-
-module.exports = {
-  sequelize,
-  Propietario,
-  Apartamento,
-  Visitante,
-  Usuario,
-  Pago,
-  Informe,
-};
+module.exports = db;

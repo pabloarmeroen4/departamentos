@@ -1,34 +1,42 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+'use strict';
 
-const Visitante = sequelize.define('Visitante', {
-  nombre: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  cedula: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  fechaIngreso: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
-  fechaSalida: {
-    type: DataTypes.DATE,
-  },
-  estado: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
-});
+module.exports = (sequelize, DataTypes) => {
+  const Visitante = sequelize.define('Visitante', {
+    nombre: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    cedula: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    telefono: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    fechaHoraIngreso: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    fechaHoraSalida: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    estado: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isIn: [['en ejecucion', 'terminado']],
+      },
+    },
+  });
 
-module.exports = Visitante;
+  Visitante.associate = (models) => {
+    Visitante.belongsTo(models.Apartamento, {
+      foreignKey: 'apartamentoId',
+      as: 'apartamento',
+    });
+  };
+
+  return Visitante;
+};

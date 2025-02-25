@@ -1,24 +1,20 @@
-import express from 'express';
-import {
-    obtenerTodosLosPropietarios,
-    obtenerPropietarioPorId,
-    crearPropietario,
-    actualizarPropietario,
-    eliminarPropietario,
-    obtenerApartamentosDePropietario,
-    obtenerPagosDePropietario,
-    obtenerVisitantesDePropietario
-} from '../controllers/propietarioController.js';
-
+const express = require('express');
 const router = express.Router();
+const propietarioController = require('../controllers/propietarioController');
 
-router.get('/', obtenerTodosLosPropietarios);
-router.get('/:id', obtenerPropietarioPorId);
-router.post('/', crearPropietario);
-router.put('/:id', actualizarPropietario);
-router.delete('/:id', eliminarPropietario);
-router.get('/:id/apartamentos', obtenerApartamentosDePropietario);
-router.get('/:id/pagos', obtenerPagosDePropietario);
-router.get('/:id/visitantes', obtenerVisitantesDePropietario);
+// Crear un nuevo propietario
+router.post('/propietario/', propietarioController.createPropietario);
 
-export default router;
+// Obtener todos los propietarios
+router.get('/propietario/', propietarioController.getAllPropietarios);
+
+// Obtener un propietario por su ID
+router.get('/propietario/:id', propietarioController.getPropietarioById);
+
+// Actualizar un propietario por su ID
+router.put('/propietario/:id', propietarioController.updatePropietario);
+
+// Eliminar un propietario por su ID
+router.delete('/propietario/:id', propietarioController.deletePropietario);
+
+module.exports = router;
