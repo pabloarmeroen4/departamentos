@@ -10,14 +10,12 @@ const userRoutes = require('./routes/userRoutes');
 const visitantesRoutes = require('./routes/visitantesRoutes');
 const apartamentoRoutes = require('./routes/apartamentoRoutes');
 
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(express.json());
-
 
 // Rutas
 app.use('/api/auth', authRoutes);
@@ -26,6 +24,7 @@ app.use('/api', pagoRoutes);
 app.use('/api', propietariosRoutes);
 app.use('/api', userRoutes);
 app.use('/api', visitantesRoutes);
+app.use('/api', apartamentoRoutes);
 
 async function startServer() {
   try {

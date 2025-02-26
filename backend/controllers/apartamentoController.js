@@ -21,7 +21,7 @@ exports.getApartamentosSinPropietario = async (req, res) => {
       where: {
         propietarioId: null,
       },
-      attributes: ['id', 'numeroDeApartamento', 'bloque', 'createdAt'],
+      attributes: ['id', 'numApt', 'torre', 'createdAt'], // Usa numApt y torre
     });
     res.status(200).json(apartamentos);
   } catch (error) {
@@ -50,14 +50,22 @@ exports.getApartamento = async (req, res) => {
 
 exports.crearApartamento = async (req, res) => {
   try {
-    const { numeroDeApartamento, bloque, metros, estado, propietarioId } = req.body;
+    const { numApt, torre, estado, propietarioId } = req.body; // Eliminamos metros
+
+    // Validar que los campos obligatorios estén presentes
+    if (!numApt || !torre || !estado) {
+      return res.status(400).json({
+        error: "Los campos numApt, torre y estado son obligatorios.",
+      });
+    }
+
     const nuevoApartamento = await Apartamento.create({
-      numeroDeApartamento,
-      bloque,
-      metros,
+      numApt,
+      torre,
       estado,
-      propietarioId,
+      propietarioId: propietarioId || null, // Permite que propietarioId sea nulo
     });
+
     res.status(201).json(nuevoApartamento);
   } catch (error) {
     res.status(500).json({ error: 'Hubo un error al crear el apartamento.' });
@@ -67,16 +75,15 @@ exports.crearApartamento = async (req, res) => {
 exports.actualizarApartamento = async (req, res) => {
   try {
     const { id } = req.params;
-    const { numeroDeApartamento, bloque, metros, estado, propietarioId } = req.body;
+    const { numApt, torre, estado, propietarioId } = req.body; // Eliminamos metros
 
     const apartamento = await Apartamento.findByPk(id);
     if (!apartamento) {
       return res.status(404).json({ error: 'Apartamento no encontrado.' });
     }
 
-    apartamento.numeroDeApartamento = numeroDeApartamento || apartamento.numeroDeApartamento;
-    apartamento.bloque = bloque || apartamento.bloque;
-    apartamento.metros = metros || apartamento.metros;
+    apartamento.numApt = numApt || apartamento.numApt;
+    apartamento.torre = torre || apartamento.torre;
     apartamento.estado = estado || apartamento.estado;
     apartamento.propietarioId = propietarioId || apartamento.propietarioId;
 

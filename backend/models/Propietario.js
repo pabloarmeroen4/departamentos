@@ -2,6 +2,11 @@
 
 module.exports = (sequelize, DataTypes) => {
   const Propietario = sequelize.define('Propietario', {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     nombre: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -24,9 +29,9 @@ module.exports = (sequelize, DataTypes) => {
       as: 'pagos',
     });
 
-    Propietario.hasOne(models.Apartamento, {
+    Propietario.hasMany(models.Apartamento, {
       foreignKey: 'propietarioId',
-      as: 'apartamento'
+      as: 'apartamentos'
     });
     
   };

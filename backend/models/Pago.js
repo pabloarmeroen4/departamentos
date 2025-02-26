@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    propietario_nombre: { // Agrega este campo
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   });
 
   Pago.associate = (models) => {
