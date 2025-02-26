@@ -1,4 +1,6 @@
 const { Propietario, Pago, Apartamento } = require('../models');
+const { sequelize } = require('../models');
+
 
 exports.createPropietario = async (req, res) => {
   const { nombre, cedula, telefono, apartamentoId } = req.body;

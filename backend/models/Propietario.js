@@ -18,15 +18,17 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Propietario.associate = (models) => {
-    Propietario.hasMany(models.Apartamento, {
-      foreignKey: 'propietarioId',
-      as: 'apartamentos',
-    });
 
     Propietario.hasMany(models.Pago, {
       foreignKey: 'propietarioId',
       as: 'pagos',
     });
+
+    Propietario.hasOne(models.Apartamento, {
+      foreignKey: 'propietarioId',
+      as: 'apartamento'
+    });
+    
   };
 
   return Propietario;

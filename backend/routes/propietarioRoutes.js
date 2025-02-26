@@ -3,11 +3,10 @@ const router = express.Router();
 const propietarioController = require('../controllers/propietarioController');
 
 // Crear un nuevo propietario
-router.post('/propietario/', propietarioController.createPropietario);
+router.post('/propietario', propietarioController.createPropietario);
 
 // Obtener todos los propietarios
-router.get('/propietario/', propietarioController.getAllPropietarios);
-
+router.get('/propietario', propietarioController.getAllPropietarios);
 // Obtener un propietario por su ID
 router.get('/propietario/:id', propietarioController.getPropietarioById);
 

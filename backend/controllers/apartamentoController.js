@@ -38,7 +38,7 @@ exports.getApartamento = async (req, res) => {
       include: {
         model: Propietario,
         as: 'propietario',
-        attributes: ['name']
+        attributes: ['nombre']
       }
     });
     if (!apartamento) return res.status(404).json({ error: "Apartamento no encontrado" });
