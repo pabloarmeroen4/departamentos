@@ -6,32 +6,39 @@ exports.createPropietario = async (req, res) => {
   const { nombre, cedula, telefono, apartamentoId } = req.body;
 
   try {
+    // Validar que los campos obligatorios estén presentes
     if (!nombre || !cedula || !apartamentoId) {
       return res.status(400).json({
         error: "El nombre, la cédula y el ID del apartamento son obligatorios.",
       });
     }
 
+    // Buscar el apartamento para asegurarnos de que exista
     const apartamento = await Apartamento.findByPk(apartamentoId);
     if (!apartamento) {
       return res.status(404).json({ error: "El apartamento no existe." });
     }
 
+    // Verificar si el apartamento ya tiene un propietario asignado
     if (apartamento.propietarioId !== null) {
       return res.status(400).json({
         error: "El apartamento ya tiene un propietario asignado.",
       });
     }
 
+    // Crear el nuevo propietario
     const nuevoPropietario = await Propietario.create({
       nombre,
       cedula,
       telefono,
     });
 
+    // Asignar el propietario al apartamento y cambiar el estado a "ocupado"
     apartamento.propietarioId = nuevoPropietario.id;
+    apartamento.estado = "ocupado"; // Cambiar el estado a "ocupado"
     await apartamento.save();
 
+    // Respuesta con el propietario y el apartamento actualizado
     return res.status(201).json({
       propietario: nuevoPropietario,
       apartamento,
@@ -58,8 +65,8 @@ exports.getAllPropietarios = async (req, res) => {
         p.cedula,
         p.telefono,
         a.id AS apartamentoId,
-        a.numeroDeApartamento AS apartamentoNumero,
-        a.bloque AS apartamentoBloque,
+        a.numApt AS apartamentoNumero,
+        a.torre AS apartamentoBloque,
         p.createdAt AS propietarioCreado,
         CASE 
             WHEN COUNT(pa.id) = 0 THEN 'pendiente'
@@ -73,7 +80,7 @@ exports.getAllPropietarios = async (req, res) => {
       LEFT JOIN 
         Apartamentos a ON p.id = a.propietarioId
       GROUP BY 
-        p.id, a.id, a.numeroDeApartamento, a.bloque, p.nombre, p.cedula, p.telefono, p.createdAt
+        p.id, a.id, a.numApt, a.torre, p.nombre, p.cedula, p.telefono, p.createdAt
       `,
       {
         type: sequelize.QueryTypes.SELECT,
