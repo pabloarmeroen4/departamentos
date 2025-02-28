@@ -1,9 +1,9 @@
-const { User } = require('../models');
+const { Usuario } = require('../models');
 
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.findAll();
-    res.json(users);
+    const usuarios = await Usuario.findAll();
+    res.json(usuarios);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -11,9 +11,9 @@ exports.getAllUsers = async (req, res) => {
 
 exports.getUserById = async (req, res) => {
   try {
-    const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
-    res.json(user);
+    const usuario = await Usuario.findByPk(req.params.id);
+    if (!usuario) return res.status(404).json({ error: 'Usuario no encontrado' });
+    res.json(usuario);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -21,9 +21,9 @@ exports.getUserById = async (req, res) => {
 
 exports.createUser = async (req, res) => {
   try {
-    const { name, cedula, phone, username, password, role } = req.body;
-    const newUser = await User.create({ name, cedula, phone, username, password, role });
-    res.status(201).json(newUser);
+    const { nombre, cedula, telefono, usuarioId, contrasena, rol } = req.body;
+    const nuevoUsuario = await Usuario.create({ nombre, cedula, telefono, usuarioId, contrasena, rol });
+    res.status(201).json(nuevoUsuario);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -32,11 +32,11 @@ exports.createUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, cedula, phone, username, password, role } = req.body;
-    const user = await User.findByPk(id);
-    if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
-    await user.update({ name, cedula, phone, username, password, role });
-    res.json(user);
+    const { nombre, cedula, telefono, usuarioId, contrasena, rol } = req.body;
+    const usuario = await Usuario.findByPk(id);
+    if (!usuario) return res.status(404).json({ error: 'Usuario no encontrado' });
+    await usuario.update({ nombre, cedula, telefono, usuarioId, contrasena, rol });
+    res.json(usuario);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -45,9 +45,9 @@ exports.updateUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await User.findByPk(id);
-    if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
-    await user.destroy();
+    const usuario = await Usuario.findByPk(id);
+    if (!usuario) return res.status(404).json({ error: 'Usuario no encontrado' });
+    await usuario.destroy();
     res.json({ message: 'Usuario eliminado con éxito' });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -57,30 +57,25 @@ exports.deleteUser = async (req, res) => {
 exports.getInformesPorUsuario = async (req, res) => {
   try {
     const { usuarioId } = req.params;
-
     const informes = await Informe.findAll({
-      where: { usuarioId },
+      where: { emisorId:usuarioId },
       include: {
-        model: User,
-        as: 'remitente',
-        attributes: ['name'],
+        model: Usuario,
+        as: 'emisor',
+        attributes: ['nombre'],
       },
     });
-
     if (!informes.length) {
-      return res.status(404).json({ error: "No se encontraron informes para este usuario." });
+      return res.status(404).json({ error: 'No se encontraron informes para este usuario.' });
     }
-
     const informesConNombres = informes.map((informe) => ({
       ...informe.toJSON(),
-      remitenteName: informe.remitente?.name || null,
+      remitenteName: informe.remitente?.nombre || null,
     }));
-
     return res.status(200).json(informesConNombres);
   } catch (error) {
-    console.error("Error al obtener los informes:", error);
     return res.status(500).json({
-      error: "Hubo un error al obtener los informes.",
+      error: 'Hubo un error al obtener los informes.',
       detalles: error.message,
     });
   }

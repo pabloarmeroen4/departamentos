@@ -1,15 +1,15 @@
-const { Informe, User } = require('../models');
+const { Informe, Usuario } = require('../models');
 
 exports.crearInforme = async (req, res) => {
   try {
-    const { cargo, motivo, descripcion, estado, remitenteId } = req.body;
+    const { cargo, motivo, descripcion, estado, emisorId } = req.body;
 
     const nuevoInforme = await Informe.create({
       cargo,
       motivo,
       descripcion,
       estado,
-      remitenteId,
+      emisorId,
     });
     return res.status(201).json(nuevoInforme);
   } catch (error) {
@@ -22,8 +22,8 @@ exports.getInformes = async (req, res) => {
   try {
     const informes = await Informe.findAll({
       include: {
-        model: User,
-        as: 'remitente',
+        model: Usuario,
+        as: 'emisor',
         attributes: ['name', 'id', 'role'],
       },
     });
@@ -44,8 +44,8 @@ exports.getInforme = async (req, res) => {
 
     const informe = await Informe.findByPk(id, {
       include: {
-        model: User,
-        as: 'remitente',
+        model: Usuario,
+        as: 'emisor',
         attributes: ['name', 'id'],
       },
     });
@@ -67,7 +67,7 @@ exports.getInforme = async (req, res) => {
 exports.actualizarInforme = async (req, res) => {
   try {
     const { id } = req.params;
-    const { cargo, motivo, descripcion, estado, remitenteId } = req.body;
+    const { cargo, motivo, descripcion, estado, emisorId } = req.body;
 
     const informe = await Informe.findByPk(id);
 
@@ -77,7 +77,7 @@ exports.actualizarInforme = async (req, res) => {
     informe.motivo = motivo || informe.motivo;
     informe.descripcion = descripcion || informe.descripcion;
     informe.estado = estado || informe.estado;
-    informe.remitenteId = remitenteId || informe.remitenteId;
+    informe.emisorId = emisorId || informe.emisorId;
 
     await informe.save();
 
@@ -124,28 +124,28 @@ exports.actualizarEstado = async (req, res) => {
   }
 };
 
-exports.getInformesPorRemitente = async (req, res) => {
+exports.getInformesPoremisor = async (req, res) => {
   try {
-    const { remitenteId } = req.params;
+    const { emisorId } = req.params;
 
-    if (!remitenteId) {
-      return res.status(400).json({ error: "El parámetro remitenteId es requerido." });
+    if (!emisorId) {
+      return res.status(400).json({ error: "El parámetro emisorId es requerido." });
     }
 
     const informes = await Informe.findAll({
       where: {
-        remitenteId: remitenteId,
+        emisorId: emisorId,
       },
       include: {
-        model: User,
-        as: 'remitente',
+        model: Usuario,
+        as: 'emisor',
         attributes: ['name', 'id', 'role'],
       },
     });
 
     if (!informes.length) {
       return res.status(404).json({
-        error: "No se encontraron informes para este remitente.",
+        error: "No se encontraron informes para este emisor.",
       });
     }
 

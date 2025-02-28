@@ -7,7 +7,7 @@ const {
   actualizarInforme, 
   eliminarInforme, 
   actualizarEstado, 
-  getInformesPorRemitente 
+  getInformesPoremisor
 } = require('../controllers/informesController');
 
 // Crear un nuevo informe
@@ -20,7 +20,7 @@ router.get('/informes', getInformes);
 router.get('/informes/:id', getInforme);
 
 // Obtener informes por ID del remitente
-router.get('/remitente/:remitenteId', getInformesPorRemitente);
+router.get('/emisor/:emisorId', getInformesPoremisor);
 
 // Actualizar un informe por su ID
 router.put('/informes/:id', actualizarInforme);
