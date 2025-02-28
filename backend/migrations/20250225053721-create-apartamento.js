@@ -9,16 +9,12 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      numeroDeApartamento: {
+      numApt: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      bloque: {
+      torre: {
         type: Sequelize.STRING,
-        allowNull: false,
-      },
-      metros: {
-        type: Sequelize.FLOAT,
         allowNull: false,
       },
       estado: {
@@ -32,7 +28,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: true,
         references: {
-          model: 'Users', // Relación con la tabla Users
+          model: 'usuarios', // Relación con la tabla Users
           key: 'id',
         },
         onDelete: 'SET NULL',

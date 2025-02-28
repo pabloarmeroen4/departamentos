@@ -1,22 +1,22 @@
 {
   "development": {
     "username": "root",
-    "password": "1061692751",
-    "database": "Villa_del_sol",
+    "password": "CTPI2025*",
+    "database": "Villa_sol",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "test": {
     "username": "root",
-    "password": null,
-    "database": "database_test",
+    "password": "CTPI2025*",
+    "database": "Villa_sol",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "production": {
     "username": "root",
-    "password": null,
-    "database": "database_production",
+    "password": "CTPI2025*",
+    "database": "Villa_sol",
     "host": "127.0.0.1",
     "dialect": "mysql"
   }

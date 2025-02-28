@@ -50,21 +50,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
     },
-    usuarioId: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-      validate: {
-        notEmpty: {
-          msg: 'El ID de usuario no puede estar vacío.',
-        },
-        len: {
-          args: [3, 50],
-          msg: 'El ID de usuario debe tener entre 3 y 50 caracteres.',
-        },
-      },
-    },
-    contrasena: {
+    contraseña: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {

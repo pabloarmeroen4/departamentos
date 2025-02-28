@@ -19,7 +19,7 @@ module.exports = {
     await queryInterface.addColumn('pagos', 'propietarioId', {
       type: Sequelize.INTEGER,
       references: {
-        model: 'users',
+        model: 'usuarios',
         key: 'id',
       },
       onUpdate: 'CASCADE',

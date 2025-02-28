@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
         isIn: [['leido', 'no leido']],
       },
     },
+    emisorId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   });
 
   Informe.associate = (models) => {

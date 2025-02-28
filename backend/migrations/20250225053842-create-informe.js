@@ -28,11 +28,11 @@ module.exports = {
           isIn: [['leido', 'no leido']],
         },
       },
-      remitenteId: {
+      emisorId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Users',
+          model: 'usuarios',
           key: 'id',
         },
         onDelete: 'CASCADE',
