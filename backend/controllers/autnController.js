@@ -1,28 +1,27 @@
 const jwt = require('jsonwebtoken');
-const { User } = require('../models');
+const { Usuario } = require('../models'); // Asegúrate de que el modelo se importa como 'Usuario'
 const JWT_SECRET = 'tu_secreto_jwt';
 
 exports.register = async (req, res) => {
   try {
-    const { name, cedula, phone, username, password, role } = req.body;
+    const { nombre, cedula, telefono, contraseña, rol } = req.body;
 
-    const user = await User.create({
-      name,
+    const user = await Usuario.create({
+      nombre,
       cedula,
-      phone,
-      username,
-      password,
-      role
+      telefono,
+      contraseña,
+      rol
     });
 
     res.status(201).json({
       message: 'User registered successfully',
       user: {
         id: user.id,
-        name: user.name,
+        nombre: user.nombre,
         cedula: user.cedula,
-        phone: user.phone,
-        username: user.username
+        telefono: user.telefono,
+        rol: user.rol
       }
     });
   } catch (error) {
@@ -32,14 +31,14 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { nombre, contraseña } = req.body;
 
-    const user = await User.findOne({ where: { username } });
+    const user = await Usuario.findOne({ where: { nombre } });
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    const isValidPassword = await user.validatePassword(password);
+    const isValidPassword = await user.validatePassword(contraseña);
     if (!isValidPassword) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
@@ -58,9 +57,8 @@ exports.login = async (req, res) => {
       message: 'Login successful',
       user: {
         id: user.id,
-        name: user.name,
-        username: user.username,
-        role: user.role,
+        nombre: user.nombre,
+        rol: user.rol,
       }
     });
   } catch (error) {
@@ -89,17 +87,17 @@ exports.verifyToken = async (req, res) => {
         return res.status(401).json({ message: "No autorizado" });
       }
 
-      const userFound = await User.findOne({ where: { id: decoded.id } });
+      const userFound = await Usuario.findOne({ where: { id: decoded.id } });
       if (!userFound) {
         return res.status(401).json({ message: "No autorizado" });
       }
 
       return res.json({
         id: userFound.id,
-        name: userFound.name,
+        nombre: userFound.nombre,
         cedula: userFound.cedula,
-        phone: userFound.phone,
-        role: userFound.role
+        telefono: userFound.telefono,
+        rol: userFound.rol
       });
     });
   } catch (error) {

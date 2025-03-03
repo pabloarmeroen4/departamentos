@@ -46,7 +46,7 @@ exports.getInforme = async (req, res) => {
       include: {
         model: Usuario,
         as: 'emisor',
-        attributes: ['name', 'id'],
+        attributes: ['nombre', 'id'],
       },
     });
 
