@@ -48,7 +48,7 @@ exports.obtenerPagos = async (req, res) => {
         {
           model: Apartamento,
           as: 'apartamento',
-          attributes: ['numeroDeApartamento', "bloque"],
+          attributes: ['numApt', "torre"],
         },
       ],
     });

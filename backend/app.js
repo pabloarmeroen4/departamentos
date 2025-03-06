@@ -9,7 +9,7 @@ const propietariosRoutes = require('./routes/propietarioRoutes');
 const userRoutes = require('./routes/userRoutes');
 const visitantesRoutes = require('./routes/visitantesRoutes');
 const apartamentoRoutes = require('./routes/apartamentoRoutes');
-
+const cookieParser = require('cookie-parser');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -17,6 +17,8 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(express.json());
+app.use(cookieParser()); // Habilitar el manejo de cookies
+
 
 // Rutas
 app.use('/api/auth', authRoutes);

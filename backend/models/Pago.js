@@ -13,14 +13,6 @@ module.exports = (sequelize, DataTypes) => {
         isIn: [['pendiente', 'cancelado', 'pagado']],
       },
     },
-    numApt: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    propietario_nombre: { // Agrega este campo
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
   });
 
   Pago.associate = (models) => {
