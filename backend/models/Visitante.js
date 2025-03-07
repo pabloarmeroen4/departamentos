@@ -10,10 +10,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    telefono: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     fechaHoraIngreso: {
       type: DataTypes.DATE,
       allowNull: false,
