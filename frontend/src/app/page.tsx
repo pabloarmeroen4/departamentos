@@ -1,7 +1,7 @@
 // app/page.js
 "use client";
 
-import Header from '../components/header';
+import Header from '../components/BarraLateral';
 
 export default function Home() {
   return (
