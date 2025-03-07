@@ -2,7 +2,8 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
-import { authContext } from "./authContext";
+import { authContext } from "./authContext/";
+
 
 const InformesContext = createContext();
 
@@ -10,7 +11,7 @@ export function InformesProvider({ children }) {
     const [informes, setInformes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { user } = useContext(authContext);
+    const { user } = useContext(AuthContext);
     const [informesId, setInformesId] = useState([]);
 
     // 🔹 Obtener todos los informes

@@ -12,12 +12,34 @@ const api = axios.create({
 });
 
 // Interceptores de solicitud y respuesta para depuración
+api.interceptors.request.use(
+    (config) => {
+        console.log("🚀 Request:", {
+            url: config.url,
+            method: config.method,
+            data: config.data,
+        });
+        return config;
+    },
+    (error) => {
+        console.error("❌ Error en la solicitud:", error);
+        return Promise.reject(error);
+    }
+);
+
 api.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        console.log("✅ Response:", {
+            status: response.status,
+            data: response.data,
+        });
+        return response;
+    },
     (error) => {
         console.error("❌ Error en la respuesta:", {
             status: error.response?.status,
             data: error.response?.data,
+            message: error.message,
         });
         return Promise.reject(error);
     }
@@ -50,7 +72,11 @@ export function AuthProvider({ children }) {
             setIsAuthenticated(true);
         } catch (err) {
             clearAuthState();
-            console.error("Fallo en la verificación del token:", err.response?.data || err.message);
+            console.error("Fallo en la verificación del token:", {
+                status: err.response?.status,
+                data: err.response?.data,
+                message: err.message,
+            });
         } finally {
             setLoading(false);
         }
@@ -59,6 +85,10 @@ export function AuthProvider({ children }) {
     // 🔹 Iniciar sesión
     const login = async (credentials) => {
         try {
+            console.log("📝 Intentando iniciar sesión con:", {
+                cedula: credentials.cedula,
+                passwordLength: credentials.contraseña?.length,
+            });
             const response = await api.post("/login", credentials);
             if (response.data.usuario) {
                 setUser(response.data.usuario);
@@ -76,6 +106,10 @@ export function AuthProvider({ children }) {
     // 🔹 Registrar usuario
     const registro = async (userData) => {
         try {
+            console.log("📝 Intentando registrar usuario:", {
+                ...userData,
+                contraseña: userData.contraseña ? "[HIDDEN]" : undefined,
+            });
             const response = await api.post("/register", userData);
             if (response.data.usuario) {
                 return await login({
@@ -97,10 +131,27 @@ export function AuthProvider({ children }) {
             await api.post("/logout");
             clearAuthState();
         } catch (err) {
-            console.error("Error al cerrar sesión:", err.response?.data || err.message);
+            console.error("Error al cerrar sesión:", {
+                status: err.response?.status,
+                data: err.response?.data,
+                message: err.message,
+            });
             clearAuthState();
         }
     };
+
+    useEffect(() => {
+        if (user) {
+            console.log("Usuario actualizado:", user);
+        }
+    }, [user]);
+
+    useEffect(() => {
+        if (error) {
+            const timer = setTimeout(() => setError(null), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [error]);
 
     useEffect(() => {
         verifyToken();

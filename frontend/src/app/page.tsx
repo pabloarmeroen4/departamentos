@@ -1,83 +1,110 @@
-// app/page.js
-"use client";
+"use client"
 
-import Header from '../components/BarraLateral';
+import { useForm } from "react-hook-form";
+import { useAuth } from "../app/context/authContext";
+import { useEffect, useState } from "react";
+import { useRouter } from 'next/navigation'; 
+// import { Link } from 'next/link';
 
 export default function Home() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const {
+    user,
+    isAuthenticated,
+    loading,
+    error,
+    login,
+  } = useAuth();
+
+
+  const [mounted, setMounted] = useState(false);
+
+  const onSubmit = handleSubmit((data) => {
+    login(data);
+  });
+
+  const router = useRouter();
+
+
+  useEffect(() => {
+    setMounted(true);
+
+    if (isAuthenticated && user) {
+      if (user.role === 'administrador') {
+        router.push('/auths/admin');
+      } else if (user.role === 'personal de seguridad') {
+        router.push('/auths/seguridad');
+      }
+    }
+  }, [loading, isAuthenticated, router, user]);
+
+  if (!mounted) {
+    return null;
+  }
+
   return (
-    <div>
-      <Header />
-      <section className="bg-blue-50 py-20 text-center">
-        <div className="container mx-auto px-4">
-          <h1 className="text-5xl font-bold text-blue-900 mb-4">
-            Bienvenido a Villas del Sol
+    <div className="h-screen w-screen log flex pb-2 flex-col items-center">
+      <div className="2xl:h-36 xl:mt-3 xl:h-40 h-20 py-5">
+        <img className="h-full object-contain" src="/images/VIlla_del_sol2.png" alt="Logo villa del sol" />
+      </div>
+      <div className="lg:h-4/6 lg:w-1/3 h-full rounded-lg filter shadow-2xl border" >
+        <div className="2xl:py-5 px-10 rounded-xl h-full shadow-2xl py-5 ">
+          <h1 className="text-3xl font-bold h-[15%] text-zinc-800 flex items-center">
+            Inicio Sesión
           </h1>
-          <p className="text-xl text-gray-700">
-            Un proyecto de apartamentos de lujo que revitaliza el corazón de Mérida.
-          </p>
-        </div>
-      </section>
+          <form onSubmit={onSubmit} className="h-[75%]">
 
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-blue-900 mb-8">
-            Nuestros Apartamentos
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Apartamento 1 */}
-            <div className="bg-white p-6 rounded-lg shadow-lg">
-              <h3 className="text-2xl font-bold text-blue-900 mb-4">
-                Villas del Sol
-              </h3>
-              <p className="text-gray-700">
-                Apartamentos innovadores diseñados para adaptarse a diferentes etapas de la vida.
-              </p>
-              <a
-                href="#"
-                className="mt-4 inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300"
-              >
-                Ver más
-              </a>
+            <div className="h-[40%]">
+              <input
+                type="text"
+                {...register("username", { required: true })}
+                className="w-full bg-transparent border outline-none text-xl text-rojo px-4 py-2 rounded-md h-[70%]  shadow-xl placeholder:text-zinc-800"
+                placeholder="Correo"
+                autoComplete="off"
+              />
+              {errors.username && (
+                <p className="text-red-500 text-sm 2xl:text-lg">El nombre de usuario es requerido</p>
+              )}
             </div>
 
-            {/* Apartamento 2 */}
-            <div className="bg-white p-6 rounded-lg shadow-lg">
-              <h3 className="text-2xl font-bold text-blue-900 mb-4">
-                Villas del Visual
-              </h3>
-              <p className="text-gray-700">
-                Diseños únicos que combinan privacidad, seguridad y exclusividad.
-              </p>
-              <a
-                href="#"
-                className="mt-4 inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300"
-              >
-                Ver más
-              </a>
+            <div className="h-[40%]">
+              <input
+                type="password"
+                {...register("password", { required: true })}
+                className="w-full bg-transparent border outline-none text-xl text-rojo px-4 py-2 rounded-md h-[70%] placeholder:text-zinc-800 shadow-xl"
+                placeholder="Contraseña"
+              />
+              <div className="w-full h-[10%]">
+                {errors.password && (
+                  <p className="text-red-500 text-sm 2xl:text-lg">
+                    La contraseña es requerida
+                  </p>
+                )}
+              </div>
             </div>
-
-            {/* Apartamento 3 */}
-            <div className="bg-white p-6 rounded-lg shadow-lg">
-              <h3 className="text-2xl font-bold text-blue-900 mb-4">
-                Visita el sitio oficial
-              </h3>
-              <p className="text-gray-700">
-                Descubre más sobre nuestros apartamentos y servicios.
-              </p>
-              <a
-                href="#"
-                className="mt-4 inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300"
+            <div className="h-[20%] flex items-center">
+              <button
+                className="transition bg-rojo px-3 w-full  h-full py-1 rounded-md hover:bg-zinc-800 hover:text-rojo text-2xl text-zinc-800 font-semibold"
+                type="submit"
               >
-                Visitar
-              </a>
+                Iniciar Sesión
+              </button>
             </div>
+          </form>
+          <div className="h-[10%]">
+            {/* {error.map((error, i) => (
+              <div className="text-red-500" key={i}>
+                {error}
+              </div>
+            ))} */}
           </div>
         </div>
-      </section>
-
-      <footer className="bg-blue-900 text-white py-8 text-center">
-        <p>&copy; 2023 Villas del Sol. Todos los derechos reservados.</p>
-      </footer>
+      </div>
     </div>
   );
 }
