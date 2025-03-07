@@ -13,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
         isIn: [['pendiente', 'cancelado', 'pagado']],
       },
     },
+    fechaVencimiento: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    
   });
 
   Pago.associate = (models) => {
